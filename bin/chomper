@@ -12,6 +12,7 @@ MITMDUMP_BIN_PATH="$(which chomper-mitmdump)"
 ORIG_USER="$(logname)"
 CHOMPER_CONFIG_DIR="/home/$ORIG_USER/.config/chomper"
 RULES_FILE="$CHOMPER_CONFIG_DIR/rules.yaml"
+PATH=${PATH}
 
 if ! hash iptables 2>/dev/null; then
    echo "ERROR: iptables not found in \$PATH\n"
@@ -21,6 +22,12 @@ fi
 
 if [[ ! -f $RULES_FILE ]] ; then
     echo "$RULES_FILE not found, aborting. Please create the configuration before running chomper."
+    exit 1
+fi
+
+sudo systemctl -q is-active cronie
+if [[ ! "$?" -eq 0 ]]; then
+    echo "Cron not running, run 'sudo systemctl start cronie.service'"
     exit 1
 fi
 
@@ -61,5 +68,5 @@ done
 
 chomper-block --rule=$1 --block_length=$2 --rules_path=${RULES_FILE} \
    --settings_json_path=${CHOMPER_CONFIG_DIR}/block_settings.json \
-   --reset_command "chomper-reset" \
+   --reset_command "env PATH=${PATH} chomper-reset" \
    --mitmdump_bin_path=${MITMDUMP_BIN_PATH}
