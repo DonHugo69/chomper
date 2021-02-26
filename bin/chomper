@@ -17,6 +17,41 @@ if [[ ! -f $RULES_FILE ]] ; then
     exit 1
 fi
 
+echo "Updating certificates ..."
+c_rehash
+cat /etc/ssl/certs/*.0 > /etc/ssl/certs/ca-certificates.crt
+
+echo "Make browsers recognize root certificates ..."
+
+###
+### CA file to install
+###
+
+certfile="/usr/share/ca-certificates/extra/mitmproxy-ca.crt"
+certname="Chomper"
+
+
+###
+### For cert8 (legacy - DBM)
+###
+
+for certDB in $(find $HOME -name "cert8.db")
+do
+    certdir=$(dirname ${certDB});
+    certutil -A -n "${certname}" -t "TCu,Cu,Tu" -i ${certfile} -d dbm:${certdir}
+done
+
+
+###
+### For cert9 (SQL)
+###
+
+for certDB in $(find $HOME -name "cert9.db")
+do
+    certdir=$(dirname ${certDB});
+    certutil -A -n "${certname}" -t "TCu,Cu,Tu" -i ${certfile} -d sql:${certdir}
+done
+
 chomper-block --rule=$1 --block_length=$2 --rules_path=${RULES_FILE} \
    --settings_json_path=${CHOMPER_CONFIG_DIR}/block_settings.json \
    --reset_command "chomper-reset" \
