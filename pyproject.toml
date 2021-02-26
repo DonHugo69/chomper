@@ -1,0 +1,26 @@
+[tool.poetry]
+name = "chomper"
+version = "0.2.1"
+description = "Internet blocker for the Linux desktop"
+authors = ["Aniket Panjwani"]
+license = "GNU General Public License v3.0+"
+
+[tool.poetry.dependencies]
+python = "^3.6.4"
+click = "^7.1.2"
+pyyaml = "^3.12"
+psutil = "^5.4.3"
+python-crontab = "^2.2.8"
+pyinstaller = "^4.2"
+mitmproxy = "^5.3"
+
+[tool.poetry.dev-dependencies]
+pytest = "^3.4.2"
+pylint = "^1.8.3"
+sphinx = "^1.7.1"
+sphinx-autobuild = "^0.7.1"
+sphinx-rtd-theme = "^0.2.4"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
