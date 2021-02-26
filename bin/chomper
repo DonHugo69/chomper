@@ -1,9 +1,16 @@
+#!/usr/bin/env bash
+
 # Copyright: (c) 2018, Aniket Panjwani <aniket@addictedto.tech>
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
-#!/bin/bash
 
-MITMDUMP_BIN_PATH=/usr/bin/chomper-mitmdump
-CHOMPER_CONFIG_DIR="$XDG_CONFIG_HOME/chomper"
+if [ "$EUID" -ne 0 ]
+  then echo "Please run as root"
+  exit
+fi
+
+MITMDUMP_BIN_PATH="$(which chomper-mitmdump)"
+ORIG_USER="$(logname)"
+CHOMPER_CONFIG_DIR="/home/$ORIG_USER/.config/chomper"
 RULES_FILE="$CHOMPER_CONFIG_DIR/rules.yaml"
 
 if ! hash iptables 2>/dev/null; then
